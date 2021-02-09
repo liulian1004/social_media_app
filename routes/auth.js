@@ -25,7 +25,7 @@ router.post(
 //register
 router.get("/register", (req, res, next) => {
   const messages = req.flash();
-  res.render("login", { messages });
+  res.render("register", { messages });
 });
 
 //send the register info

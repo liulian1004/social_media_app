@@ -8,24 +8,29 @@ var logger = require("morgan");
 const hbs = require("hbs");
 const dbClient = require("mongodb").MongoClient;
 const passport = require("passport");
-const strategy = require("passport-local").Strategy;
+const Strategy = require("passport-local").Strategy;
 const session = require("express-session");
 const flash = require("connect-flash");
 const auth = require("./helper/auth");
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
+const authRouter = require("./routes/auth");
 
 var app = express();
 
 //init db
-dbClient.connect("mongodb://localhost", (error, result) => {
-  if (error) {
-    throw error;
+dbClient.connect(
+  "mongodb://localhost:27017",
+  { useUnifiedTopology: true },
+  (error, result) => {
+    if (error) {
+      throw error;
+    }
+    const db = result.db("user-proflies");
+    const users = db.collection("users");
+    app.locals.users = users;
   }
-  const db = result.db("user-proflies");
-  const users = db.collection("users");
-  app.locals.users = users;
-});
+);
 
 //check password
 passport.use(
@@ -81,6 +86,7 @@ app.use((req, res, next) => {
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
+app.use("/auth", authRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
