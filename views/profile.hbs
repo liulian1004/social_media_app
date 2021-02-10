@@ -1,0 +1,27 @@
+
+{{> messages }}
+
+{{#if username}}
+<h2>{{username}}'s proflie</h2>
+
+<table class="table">
+    <tr>
+        <td>Nick Name:</td>
+        <td>{{name}}</td>
+    </tr>
+    <tr>
+        <td>Instagram:</td>
+        <td>{{instagram}}</td>
+    </tr>
+    <tr>
+        <td>Twitter: </td>
+        <td>{{twitter}}</td>
+    </tr>
+    <tr>
+        <td>Why I am here: </td>
+        <td>{{message}}</td>
+    </tr>
+</table>
+{{/if}}
+
+<p><a href="/">Back</a> to home page.</p>

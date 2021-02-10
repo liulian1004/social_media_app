@@ -43,15 +43,14 @@ router.post("/register", (req, res, next) => {
     } else {
       req.flash("success", "You registered successfully!!!");
     }
-    //TODO:redirect to context page?
-    res.redirect("/auth/register");
+    res.redirect("/");
   });
 });
 
 //logout
 router.get("/logout", (req, res, next) => {
   req.session.destroy();
-  req.redirect("/");
+  res.redirect("/");
 });
 
 module.exports = router;
