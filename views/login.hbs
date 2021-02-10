@@ -1,18 +1,19 @@
 <h2> Welcome to login page</h2>
-<p>Please fill in the info below</p>
 
 {{> messages }}
 
 <form action="/auth/login" method="POST">
     <div class="form-group">
-        <label for="username">User Name/Email:</label>
+        <label for="username">User Name:</label>
         <input type="text" class="form"  name="username" id ="username">
     </div>
     <form-group>
         <label for="password">Poassword: </label>
         <input type="password" class="form" name="password" id="password">
     </form-group>
-    <button class="btn btn-primary">Login</button>
+    <br/>
+
+    <button class="btn btn-primary btn-sm" >Login</button>
 </form>
 
 <p>If you don't have the account, please  <a href="/auth/register">register</a> here !</p>
