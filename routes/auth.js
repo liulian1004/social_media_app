@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const authHelper = require("../helper/auth");
+const authHelper = require("../helper/encode");
 const passport = require("passport");
 const flash = require("connect-flash");
 
@@ -44,6 +44,7 @@ router.post("/register", (req, res, next) => {
       req.flash("success", "You registered successfully!!!");
     }
     res.redirect("/");
+    //res.redirect("/users");
   });
 });
 

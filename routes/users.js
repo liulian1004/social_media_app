@@ -1,8 +1,9 @@
 var express = require("express");
 var router = express.Router();
 const ObjectID = require("mongodb").ObjectID;
+const flash = require("connect-flash");
 
-//check own proflie
+//get own proflie
 router.get("/", function (req, res, next) {
   if (!req.isAuthenticated()) {
     res.redirect("/auth/login");
@@ -20,7 +21,6 @@ router.get("/", function (req, res, next) {
   });
 });
 
-//check others proflie without the username
 router.get("/:username", (req, res, next) => {
   const users = req.app.locals.users;
   const username = req.params.username;
@@ -34,7 +34,7 @@ router.get("/:username", (req, res, next) => {
   });
 });
 
-//upddate user profile
+//update user profile
 router.post("/", (req, res, next) => {
   if (!req.isAuthenticated()) {
     res.redirect("/auth/login");
@@ -51,9 +51,9 @@ router.post("/", (req, res, next) => {
       if (err) {
         throw err;
       }
-
       res.redirect("/users");
     }
   );
 });
+
 module.exports = router;
