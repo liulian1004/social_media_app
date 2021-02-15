@@ -16,7 +16,6 @@ router.get("/", function (req, res, next) {
     if (error) {
       throw error;
     }
-
     res.render("account", { ...result });
   });
 });

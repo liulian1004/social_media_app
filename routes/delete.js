@@ -11,14 +11,13 @@ router.get("/:username", function (req, res, next) {
 
   users.findOne({ username }, (error, result) => {
     if (error || !result) {
-      res.render("profile", { messages: { error: ["users not found"] } });
+      req.render("profile", { messages: { error: ["users not found"] } });
+      res.redirect("/delete");
     }
     //console.log(result);
     users.deleteOne({ username }, (err) => {
       if (err) {
-        req.flash("sucess", "This acount does not exist");
-      } else {
-        req.flash("sucess", "You deleted the account successfully!!!");
+        res.redirect("/error", { messages: "users not found" });
       }
       res.redirect("/");
     });

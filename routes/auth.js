@@ -43,8 +43,7 @@ router.post("/register", (req, res, next) => {
     } else {
       req.flash("success", "You registered successfully!!!");
     }
-    res.redirect("/");
-    //res.redirect("/users");
+    res.redirect("/auth/register");
   });
 });
 
