@@ -4,7 +4,9 @@
 
 <ul>
 {{#each list}}
+{{#if message}}
   <li><p><a href="/users/{{username}}">{{username}}</a>: {{message}}</p></li>
+  {{/if}}
 {{/each}}
 </ul>
 

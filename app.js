@@ -85,6 +85,7 @@ app.use((req, res, next) => {
   next();
 });
 
+//create the router
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/auth", authRouter);

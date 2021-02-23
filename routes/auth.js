@@ -4,8 +4,8 @@ const authHelper = require("../helper/encode");
 const passport = require("passport");
 const flash = require("connect-flash");
 
-//login
-router.get("/login", (req, res, next) => {
+//open login page
+router.get("/login", (req, res) => {
   const messages = req.flash();
   res.render("login", { messages });
 });
@@ -17,7 +17,7 @@ router.post(
     failureRedirect: "/auth/login",
     failureFlash: "The username or password is wrong, please try again!!!! ",
   }),
-  (req, res, next) => {
+  (req, res) => {
     res.redirect("/users");
   }
 );
@@ -28,23 +28,31 @@ router.get("/register", (req, res, next) => {
   res.render("register", { messages });
 });
 
-//send the register info
+//send the register info to db
+// valid the input
 //encode the pw
 router.post("/register", (req, res, next) => {
   const parms = req.body;
   const users = req.app.locals.users;
-  const payload = {
-    username: parms.username,
-    password: authHelper.encodePW(parms.password),
-  };
-  users.insertOne(payload, (err) => {
-    if (err) {
-      req.flash("error", "User account has already existed");
-    } else {
-      req.flash("success", "You registered successfully!!!");
-    }
+  const username = parms.username;
+  const pw = parms.password;
+  if (username === "" || pw === "") {
+    req.flash("error", "Please fill in the username or password");
     res.redirect("/auth/register");
-  });
+  } else {
+    const payload = {
+      username: parms.username,
+      password: authHelper.encodePW(parms.password),
+    };
+    users.insertOne(payload, (err) => {
+      if (err) {
+        req.flash("error", "User account has already existed");
+      } else {
+        req.flash("success", "You registered successfully!!!");
+      }
+      res.redirect("/auth/register");
+    });
+  }
 });
 
 //logout

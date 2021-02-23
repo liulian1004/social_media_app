@@ -4,7 +4,7 @@ var router = express.Router();
 //render the user list
 router.get("/", function (req, res, next) {
   const users = req.app.locals.users;
-  //limit to 10
+  //render the user who leave the message
   users.find().toArray((err, list) => {
     res.render("index", {
       list,

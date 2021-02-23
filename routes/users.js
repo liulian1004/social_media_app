@@ -4,7 +4,7 @@ const ObjectID = require("mongodb").ObjectID;
 const flash = require("connect-flash");
 
 //get own proflie
-router.get("/", function (req, res, next) {
+router.get("/", function (req, res) {
   if (!req.isAuthenticated()) {
     res.redirect("/auth/login");
   }
@@ -20,7 +20,8 @@ router.get("/", function (req, res, next) {
   });
 });
 
-router.get("/:username", (req, res, next) => {
+//check profile with username
+router.get("/:username", (req, res) => {
   const users = req.app.locals.users;
   const username = req.params.username;
 
@@ -28,13 +29,21 @@ router.get("/:username", (req, res, next) => {
     if (error || !result) {
       res.render("profile", { messages: { error: ["users not found"] } });
     }
-
-    res.render("profile", { ...result, username });
+    res.format({
+      //json
+      "application/json": () => {
+        res.json(result);
+      },
+      //html
+      "text/html": () => {
+        res.render("profile", { ...result, username });
+      },
+    });
   });
 });
 
 //update user profile
-router.post("/", (req, res, next) => {
+router.post("/", (req, res) => {
   if (!req.isAuthenticated()) {
     res.redirect("/auth/login");
   }
