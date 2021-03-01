@@ -2,24 +2,26 @@ var createError = require("http-errors");
 var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
-var logger = require("morgan");
 
 //import libary
 const hbs = require("hbs");
 const dbClient = require("mongodb").MongoClient;
-const passport = require("passport");
-const Strategy = require("passport-local").Strategy;
-const session = require("express-session");
-const flash = require("connect-flash");
-const auth = require("./helper/encode");
+const passport = require("passport"); //authentication middleware
+const Strategy = require("passport-local").Strategy; //for authenticating with a username and password.
+const session = require("express-session"); //session middleware
+const flash = require("connect-flash"); //a special area of the session used for storing messages.
+//helper method
+const auth = require("./helper/encode"); // the method of encoding pw
+
+//import path
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
-const authRouter = require("./routes/auth");
+var authRouter = require("./routes/auth");
 var deleteRouter = require("./routes/delete");
 
 var app = express();
 
-//init db
+//init db at localhost
 dbClient.connect(
   "mongodb://localhost:27017",
   { useUnifiedTopology: true },
@@ -33,7 +35,17 @@ dbClient.connect(
   }
 );
 
-//check password
+//app.use: using express middleware
+//init the middleware and setting up
+// view engine
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "hbs");
+hbs.registerPartials(path.join(__dirname, "views/partials"));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, "public")));
+//password
 passport.use(
   new Strategy((username, password, done) => {
     app.locals.users.findOne({ username }, (error, result) => {
@@ -41,7 +53,7 @@ passport.use(
         return done(error);
       }
       // did not find user or password doesn't match
-      // need to encode the input pw
+      // need to encode the input password
       if (!result || result.password != auth.encodePW(password)) {
         return done(null, false);
       }
@@ -50,6 +62,8 @@ passport.use(
   })
 );
 
+// In order to support login sessions
+//Passport will serialize and deserialize user instances to and from the session.
 passport.serializeUser((user, done) => {
   done(null, user._id);
 });
@@ -57,15 +71,6 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser((id, done) => {
   done(null, { id });
 });
-
-// view engine setup
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "hbs");
-hbs.registerPartials(path.join(__dirname, "views/partials"));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public")));
 
 //store session
 app.use(
@@ -78,12 +83,13 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(flash());
-
 app.use((req, res, next) => {
   res.locals.loggedIn = req.isAuthenticated();
   next();
 });
+
+//flash message
+app.use(flash());
 
 //create the router
 app.use("/", indexRouter);

@@ -12,6 +12,4 @@ router.get("/", function (req, res, next) {
   });
 });
 
-// const users = require("./users");
-// const deleteUser = users.de;
 module.exports = router;

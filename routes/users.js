@@ -1,7 +1,6 @@
 var express = require("express");
 var router = express.Router();
 const ObjectID = require("mongodb").ObjectID;
-const flash = require("connect-flash");
 
 //get own proflie
 router.get("/", function (req, res) {
@@ -25,6 +24,7 @@ router.get("/:username", (req, res) => {
   const users = req.app.locals.users;
   const username = req.params.username;
 
+  //console.log("username", username);
   users.findOne({ username }, (error, result) => {
     if (error || !result) {
       res.render("profile", { messages: { error: ["users not found"] } });
@@ -33,6 +33,30 @@ router.get("/:username", (req, res) => {
       //json
       "application/json": () => {
         res.json(result);
+      },
+
+      //xml
+      "application/xml": () => {
+        let xml =
+          '<?xml version="1.0"?>\n' +
+          '<userName userName="' +
+          result.username +
+          '">\n' +
+          "<insragram>" +
+          result.instagram +
+          "</insragram>\n" +
+          "<message>" +
+          result.message +
+          "</message>\n" +
+          "<twitter>" +
+          result.twitter +
+          "</twitter>\n" +
+          "<name>" +
+          result.name +
+          "</name>\n" +
+          "</userName>";
+        res.type("application/xml");
+        res.send(xml);
       },
       //html
       "text/html": () => {
